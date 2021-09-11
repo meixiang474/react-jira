@@ -55,6 +55,6 @@
     "commit-msg": "npm run commitlint"
   },
   "lint-staged": {
-    "*.{js,css,md,ts,tsx,jsx}": "prettier --write"
+    "*.{js,css,md,ts,tsx,jsx}": "npx prettier --write"
   }
 }
