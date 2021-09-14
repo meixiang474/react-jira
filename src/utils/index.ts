@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 
-export const isFalsy = (val) => (val === 0 ? false : !val);
+export const isFalsy = (val: unknown) => (val === 0 ? false : !val);
 
 // 过滤掉对象里的空值
-export const cleanObject = (obj) => {
+export const cleanObject = (obj: object) => {
   const res = { ...obj };
   Object.keys(res).forEach((key) => {
+    // @ts-ignore
     const val = res[key];
     if (isFalsy(val)) {
+      // @ts-ignore
       delete res[key];
     }
   });
@@ -15,7 +17,7 @@ export const cleanObject = (obj) => {
 };
 
 // 初始化数据
-export const useMount = (callback) => {
+export const useMount = (callback: () => void) => {
   useEffect(() => {
     callback();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,7 +25,7 @@ export const useMount = (callback) => {
 };
 
 // 同步数据防抖处理
-export const useDebounce = (value, delay) => {
+export const useDebounce = <T>(value: T, delay?: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {

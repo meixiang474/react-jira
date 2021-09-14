@@ -17,7 +17,7 @@ export const ProjectListScreen = () => {
   });
 
   // 防抖处理的查询参数
-  const debouncedParam = useDebounce(param, 500);
+  const debouncedParam = useDebounce(param, 200);
 
   // 工程列表
   const [list, setList] = useState([]);
@@ -25,7 +25,9 @@ export const ProjectListScreen = () => {
   // 同步工程列表
   useEffect(() => {
     fetch(
-      `${apiUrl}/projects?${qs.stringify(cleanObject(debouncedParam))}`
+      `${apiUrl}/projects?${qs.stringify(
+        cleanObject(debouncedParam as object)
+      )}`
     ).then(async (res) => {
       if (res.ok) {
         setList(await res.json());
