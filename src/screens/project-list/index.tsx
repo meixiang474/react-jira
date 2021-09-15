@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { SearchPanel } from "./search-panel";
 import { List } from "./list";
-import * as qs from "qs";
 import { cleanObject, useDebounce, useMount } from "utils";
-
-const apiUrl = process.env.REACT_APP_API_URL;
+import { useHttp } from "utils/http";
 
 export const ProjectListScreen = () => {
   // 负责人列表
@@ -22,26 +20,16 @@ export const ProjectListScreen = () => {
   // 工程列表
   const [list, setList] = useState([]);
 
+  const client = useHttp();
+
   // 同步工程列表
   useEffect(() => {
-    fetch(
-      `${apiUrl}/projects?${qs.stringify(
-        cleanObject(debouncedParam as object)
-      )}`
-    ).then(async (res) => {
-      if (res.ok) {
-        setList(await res.json());
-      }
-    });
-  }, [debouncedParam]);
+    client("projects", { data: cleanObject(debouncedParam) }).then(setList);
+  }, [debouncedParam, client]);
 
   // 初始化负责人列表
   useMount(() => {
-    fetch(`${apiUrl}/users`).then(async (res) => {
-      if (res.ok) {
-        setUsers(await res.json());
-      }
-    });
+    client("users").then(setUsers);
   });
 
   return (
