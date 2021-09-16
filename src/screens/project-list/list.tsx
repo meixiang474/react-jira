@@ -1,30 +1,40 @@
-import { Table } from "antd";
+import { Table, TableProps } from "antd";
+import dayjs from "dayjs";
 import { User } from "./search-panel";
 
-interface Project {
+export interface Project {
   id: string;
   name: string;
   personId: string;
   pin: boolean;
   organization: string;
+  created: number;
 }
 
-interface ListProps {
-  list: Project[];
+// 继承 TableProps, 实现 List Props -> Table Props的透传
+interface ListProps extends TableProps<Project> {
   users: User[];
 }
 
-export const List = ({ list, users }: ListProps) => {
+export const List = ({ users, ...props }: ListProps) => {
   return (
     <Table
       pagination={false}
+      rowKey={"id"}
       columns={[
         {
+          key: "name",
           title: "名称",
           dataIndex: "name",
           sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
+          key: "organization",
+          title: "部门",
+          dataIndex: "organization",
+        },
+        {
+          key: "person",
           title: "负责人",
           render(value, project) {
             return (
@@ -35,8 +45,21 @@ export const List = ({ list, users }: ListProps) => {
             );
           },
         },
+        {
+          key: "createdAt",
+          title: "创建时间",
+          render(value, project) {
+            return (
+              <span>
+                {project.created
+                  ? dayjs(project.created).format("YYYY-MM-DD")
+                  : "无"}
+              </span>
+            );
+          },
+        },
       ]}
-      dataSource={list}
+      {...props}
     />
   );
 };

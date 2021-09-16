@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 
 export const isFalsy = (val: unknown) => (val === 0 ? false : !val);
 
+export const isVoid = (val: unknown) => val == null || val === "";
+
 // 过滤掉对象里的空值
 export const cleanObject = (obj: Record<string, unknown>) => {
   const res = { ...obj };
   Object.keys(res).forEach((key) => {
     const val = res[key];
-    if (isFalsy(val)) {
+    if (isVoid(val)) {
       delete res[key];
     }
   });
