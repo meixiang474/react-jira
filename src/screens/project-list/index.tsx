@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SearchPanel } from "./search-panel";
 import { List } from "./list";
-import { useDebounce } from "utils";
+import { useDebounce, useDocumentTitle } from "utils";
 import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "utils/project";
@@ -16,6 +16,8 @@ export const ProjectListScreen = () => {
 
   // 防抖处理的查询参数
   const debouncedParam = useDebounce(param, 200);
+
+  useDocumentTitle("项目列表", false);
 
   // 请求数据完成两层封装
   // 第一层封装 http 请求
