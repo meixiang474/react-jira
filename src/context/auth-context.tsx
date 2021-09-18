@@ -1,4 +1,4 @@
-import React, { useContext, useState, ReactNode } from "react";
+import React, { useContext, ReactNode } from "react";
 import * as auth from "auth-provider";
 import { User } from "screens/project-list/search-panel";
 import { http } from "utils/http";
@@ -54,10 +54,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     run(bootstrapUser());
   });
 
+  // me接口请求前或请求中，返回loaidng
   if (isIdle || isLoading) {
     return <FullPageLoading />;
   }
 
+  // me接口请求失败，返回失败原因
   if (isError) {
     return <FullPageErrorFallback error={error} />;
   }
