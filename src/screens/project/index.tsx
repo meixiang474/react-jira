@@ -13,7 +13,7 @@ export const ProjectScreen = () => {
         <Route path="/kanban" element={<KanbanScreen />} />
         <Route path="/epic" element={<EpicScreen />} />
         {/* 默认跳到kanban */}
-        <Navigate to="kanban" />
+        <Navigate to="kanban" replace />
       </Routes>
     </div>
   );

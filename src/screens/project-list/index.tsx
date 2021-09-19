@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { SearchPanel } from "./search-panel";
 import { List } from "./list";
 import { useDebounce, useDocumentTitle } from "utils";
@@ -6,16 +5,16 @@ import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
-import { useUrlQueryParam } from "utils/url";
+import { useProjectsSeatchParams } from "./util";
 
 export const ProjectListScreen = () => {
+  useDocumentTitle("项目列表", false);
+
   // 获取查询参数
-  const [param, setParam] = useUrlQueryParam(["name", "personId"]);
+  const [param, setParam] = useProjectsSeatchParams();
 
   // 防抖处理的查询参数
   const debouncedParam = useDebounce(param, 200);
-
-  useDocumentTitle("项目列表", false);
 
   // 请求数据完成两层封装
   // 第一层封装 http 请求
@@ -30,7 +29,7 @@ export const ProjectListScreen = () => {
   return (
     <Container>
       <h1>项目列表</h1>
-      <SearchPanel param={param} setParam={setParam} users={users || []} />
+      <SearchPanel param={param} setParam={setParam} />
       {error ? (
         <Typography.Text type="danger">{error.message}</Typography.Text>
       ) : null}
