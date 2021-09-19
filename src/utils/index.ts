@@ -73,3 +73,19 @@ export const useDocumentTitle = (
     };
   }, [keepOnUnmount, oldTitle]);
 };
+
+export const useMountedRef = () => {
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  });
+
+  return mountedRef;
+};
+
+// 回到首页并刷新整个页面
+export const resetRoute = () => (window.location.href = window.location.origin);
