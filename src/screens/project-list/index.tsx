@@ -6,13 +6,11 @@ import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
+import { useUrlQueryParam } from "utils/url";
 
 export const ProjectListScreen = () => {
-  // 查询参数 name, personId
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
+  // 获取查询参数
+  const [param, setParam] = useUrlQueryParam(["name", "personId"]);
 
   // 防抖处理的查询参数
   const debouncedParam = useDebounce(param, 200);
