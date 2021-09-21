@@ -28,6 +28,8 @@ export const useAsync = <T>(
     ...(initialState || {}),
   });
 
+  const [retry, setRetry] = useState(() => () => {});
+
   // 更改数据，说明请求已经成功
   const setData = useCallback(
     (data: T) =>
@@ -47,10 +49,15 @@ export const useAsync = <T>(
 
   // 用来调度异步请求
   const run = useCallback(
-    (promise: Promise<T>) => {
+    (promise: Promise<T>, runConfig?: { retry: () => Promise<T> }) => {
       if (!promise || !promise.then) {
         throw new Error("请传入 Promise 类型数据");
       }
+      setRetry(() => () => {
+        if (runConfig?.retry) {
+          run(runConfig.retry(), runConfig);
+        }
+      });
       setState((state) => ({ ...state, stat: "loading" }));
       return promise
         .then((data) => {
@@ -77,6 +84,8 @@ export const useAsync = <T>(
     run,
     setData,
     setError,
+    // 重新跑一遍run, 刷新state
+    retry,
     ...state,
   };
 };

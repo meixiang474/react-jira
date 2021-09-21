@@ -21,7 +21,7 @@ export const ProjectListScreen = () => {
   // 第二层封装 loading error
 
   // 请求 project 列表
-  const { error, isLoading, data: list } = useProjects(debouncedParam);
+  const { error, isLoading, data: list, retry } = useProjects(debouncedParam);
 
   // 请求负责人列表
   const { data: users } = useUsers();
@@ -33,7 +33,12 @@ export const ProjectListScreen = () => {
       {error ? (
         <Typography.Text type="danger">{error.message}</Typography.Text>
       ) : null}
-      <List loading={isLoading} dataSource={list || []} users={users || []} />
+      <List
+        refresh={retry}
+        loading={isLoading}
+        dataSource={list || []}
+        users={users || []}
+      />
     </Container>
   );
 };
