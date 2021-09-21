@@ -74,6 +74,7 @@ export const useDocumentTitle = (
   }, [keepOnUnmount, oldTitle]);
 };
 
+// 组件的挂载状态
 export const useMountedRef = () => {
   const mountedRef = useRef(false);
 
@@ -89,3 +90,17 @@ export const useMountedRef = () => {
 
 // 回到首页并刷新整个页面
 export const resetRoute = () => (window.location.href = window.location.origin);
+
+// 获取子集
+export const subset = <
+  O extends { [key in string]: unknown },
+  K extends keyof O
+>(
+  obj: O,
+  keys: K[]
+) => {
+  const filteredEntries = Object.entries(obj).filter(([key]) => {
+    return keys.includes(key as K);
+  });
+  return Object.fromEntries(filteredEntries) as Pick<O, K>;
+};

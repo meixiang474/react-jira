@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useMountedRef } from "utils";
 
 interface State<T> {
   error: Error | null;
@@ -29,6 +30,8 @@ export const useAsync = <T>(
   });
 
   const [retry, setRetry] = useState(() => () => {});
+
+  const mountedRef = useMountedRef();
 
   // 更改数据，说明请求已经成功
   const setData = useCallback(
@@ -61,19 +64,23 @@ export const useAsync = <T>(
       setState((state) => ({ ...state, stat: "loading" }));
       return promise
         .then((data) => {
-          setData(data);
+          if (mountedRef.current) {
+            setData(data);
+          }
           return data;
         })
         .catch((error) => {
-          setError(error);
+          if (mountedRef.current) {
+            setError(error);
+          }
           if (config.throwOnError) {
-            throw error;
+            return Promise.reject(error);
           } else {
             return error;
           }
         });
     },
-    [setData, setError, config.throwOnError]
+    [setData, setError, config.throwOnError, mountedRef]
   );
 
   return {
