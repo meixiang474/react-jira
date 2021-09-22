@@ -6,13 +6,13 @@ import { useMount } from "utils";
 import { useAsync } from "utils/useAsync";
 import { FullPageErrorFallback, FullPageLoading } from "components/lib";
 
-interface AuthForm {
+export interface AuthForm {
   username: string;
   password: string;
 }
 
 // 登录初始化
-const bootstrapUser = async () => {
+export const bootstrapUser = async () => {
   let user = null;
   const token = auth.getToken();
   if (token) {
