@@ -1,62 +1,52 @@
-import { useCallback, useEffect } from "react";
 import { Project } from "screens/project-list/list";
 import { useHttp } from "utils/http";
-import { useAsync } from "./useAsync";
-import { cleanObject } from "./index";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { cleanObject } from "utils";
 
 export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
 
-  // 工程列表相关异步操作及数据
-  const { run, ...result } = useAsync<Project[]>();
-
-  const fetchProjects = useCallback(
-    () => client("projects", { data: cleanObject(param || {}) }),
-    [client, param]
+  return useQuery<Project[]>(["projects", param], () =>
+    client("projects", { data: cleanObject(param || {}) })
   );
-
-  // 同步工程列表
-  useEffect(() => {
-    run(fetchProjects(), { retry: fetchProjects });
-  }, [fetchProjects, run]);
-
-  return result;
 };
 
 export const useEditProject = () => {
-  const { run, ...rest } = useAsync();
   const client = useHttp();
 
-  const mutate = (params: Partial<Project>) => {
-    return run(
-      client(`projects/${params.id}`, {
-        data: params,
-        method: "PATCH",
-      })
-    );
-  };
+  const queryClient = useQueryClient();
 
-  return {
-    mutate,
-    ...rest,
-  };
+  return useMutation(
+    (params: Partial<Project>) =>
+      client(`projects/${params.id}`, { method: "PATCH", data: params }),
+    {
+      onSuccess: () => queryClient.invalidateQueries("projects"),
+    }
+  );
 };
 
 export const useAddProject = () => {
-  const { run, ...rest } = useAsync();
   const client = useHttp();
 
-  const add = (params: Partial<Project>) => {
-    return run(
-      client(`projects`, {
-        data: params,
-        method: "POST",
-      })
-    );
-  };
+  const queryClient = useQueryClient();
 
-  return {
-    add,
-    ...rest,
-  };
+  return useMutation(
+    (params: Partial<Project>) =>
+      client(`projects`, { method: "POST", data: params }),
+    {
+      onSuccess: () => queryClient.invalidateQueries("projects"),
+    }
+  );
+};
+
+export const useProject = (id?: number) => {
+  const client = useHttp();
+
+  return useQuery<Project>(
+    ["project", { id }],
+    () => client(`projects/${id}`),
+    {
+      enabled: !!id,
+    }
+  );
 };

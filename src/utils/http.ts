@@ -21,7 +21,7 @@ export const http = async (
     headers: {
       Authorization: token ? `Bearer ${token}` : "",
       "Content-Type": data ? "application/json" : "",
-      ...(headers || {}),
+      ...headers,
     },
     ...customConfig,
   };

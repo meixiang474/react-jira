@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { useEditProject } from "utils/project";
 import { User } from "./search-panel";
+import { useProjectModal } from "./util";
 
 export interface Project {
   id: number;
@@ -18,14 +19,16 @@ export interface Project {
 // 继承 TableProps, 实现 List Props -> Table Props的透传
 interface ListProps extends TableProps<Project> {
   users: User[];
-  refresh?: () => void;
 }
 
 export const List = ({ users, ...props }: ListProps) => {
   const { mutate } = useEditProject();
 
-  const pinProject = (id: number) => (pin: boolean) =>
-    mutate({ id, pin }).then(props.refresh);
+  const pinProject = (id: number) => (pin: boolean) => mutate({ id, pin });
+
+  const { startEdit } = useProjectModal();
+
+  const editProject = (id: number) => () => startEdit(id);
 
   return (
     <Table
@@ -87,9 +90,10 @@ export const List = ({ users, ...props }: ListProps) => {
               <Dropdown
                 overlay={
                   <Menu>
-                    <Menu.Item key="edit">
-                      <ButtonNoPadding type="link">编辑</ButtonNoPadding>
+                    <Menu.Item key="edit" onClick={editProject(project.id)}>
+                      编辑
                     </Menu.Item>
+                    <Menu.Item key="delete">删除</Menu.Item>
                   </Menu>
                 }
               >
