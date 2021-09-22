@@ -4,14 +4,14 @@ import { useHttp } from "utils/http";
 import { useAsync } from "./useAsync";
 import { cleanObject } from "./index";
 
-export const useProjects = (param: Partial<Project>) => {
+export const useProjects = (param?: Partial<Project>) => {
   const client = useHttp();
 
   // 工程列表相关异步操作及数据
   const { run, ...result } = useAsync<Project[]>();
 
   const fetchProjects = useCallback(
-    () => client("projects", { data: cleanObject(param) }),
+    () => client("projects", { data: cleanObject(param || {}) }),
     [client, param]
   );
 

@@ -6,8 +6,9 @@ import { Typography } from "antd";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
 import { useProjectsSeatchParams } from "./util";
+import { Row } from "components/lib";
 
-export const ProjectListScreen = () => {
+export const ProjectListScreen = (props: { projectButton: JSX.Element }) => {
   useDocumentTitle("项目列表", false);
 
   // 获取查询参数
@@ -28,12 +29,16 @@ export const ProjectListScreen = () => {
 
   return (
     <Container>
-      <h1>项目列表</h1>
+      <Row between>
+        <h1>项目列表</h1>
+        {props.projectButton}
+      </Row>
       <SearchPanel param={param} setParam={setParam} />
       {error ? (
         <Typography.Text type="danger">{error.message}</Typography.Text>
       ) : null}
       <List
+        projectButton={props.projectButton}
         refresh={retry}
         loading={isLoading}
         dataSource={list || []}

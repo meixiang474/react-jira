@@ -26,7 +26,7 @@ export const useAsync = <T>(
 
   const [state, setState] = useState<State<T>>({
     ...defaultInitialState,
-    ...(initialState || {}),
+    ...initialState,
   });
 
   const [retry, setRetry] = useState(() => () => {});

@@ -2,26 +2,57 @@ import { useAuth } from "context/auth-context";
 import { ProjectListScreen } from "screens/project-list";
 import { ProjectScreen } from "screens/project";
 import styled from "@emotion/styled";
-import { Row } from "components/lib";
+import { ButtonNoPadding, Row } from "components/lib";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Dropdown, Menu, Button } from "antd";
 import { Navigate, Route, Routes } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
 import { resetRoute } from "utils";
+import { useState } from "react";
+import { ProjectModal } from "screens/project-list/ProjectModal";
+import { ProjectPopover } from "components/ProjectPopover";
 
 export const AuthenticatedApp = () => {
+  const [projectModalOpen, setProjectModalOpen] = useState(false);
   return (
     <Container>
-      <PageHeader />
+      <PageHeader
+        projectButton={
+          <ButtonNoPadding
+            onClick={() => setProjectModalOpen(true)}
+            type="link"
+          >
+            创建项目
+          </ButtonNoPadding>
+        }
+      />
       <Main>
         <Router>
           <Routes>
-            <Route path="/projects" element={<ProjectListScreen />} />
+            <Route
+              path="/projects"
+              element={
+                <ProjectListScreen
+                  projectButton={
+                    <ButtonNoPadding
+                      onClick={() => setProjectModalOpen(true)}
+                      type="link"
+                    >
+                      创建项目
+                    </ButtonNoPadding>
+                  }
+                />
+              }
+            />
             <Route path="/projects/:projectId/*" element={<ProjectScreen />} />
             <Navigate to="/projects" />
           </Routes>
         </Router>
       </Main>
+      <ProjectModal
+        projectModalOpen={projectModalOpen}
+        onClose={() => setProjectModalOpen(false)}
+      />
     </Container>
   );
 };
@@ -31,36 +62,42 @@ export const AuthenticatedApp = () => {
 // grid-template-areas
 // grid-gap
 
-const PageHeader = () => {
-  const { logout, user } = useAuth();
-
+const PageHeader = (props: { projectButton: JSX.Element }) => {
   return (
     <Header between>
       <HeaderLeft gap>
         {/* 以 svg 的形式渲染 svg 图片 */}
-        <Button type="link" onClick={resetRoute}>
+        <ButtonNoPadding type="link" onClick={resetRoute}>
           <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"} />
-        </Button>
+        </ButtonNoPadding>
 
-        <h2>项目</h2>
-        <h2>用户</h2>
+        <ProjectPopover {...props} />
+        <span>用户</span>
       </HeaderLeft>
       <HeaderRight>
-        <Dropdown
-          overlay={
-            <Menu>
-              <Menu.Item key={"logout"}>
-                <Button type="link" onClick={logout}>
-                  登出
-                </Button>
-              </Menu.Item>
-            </Menu>
-          }
-        >
-          <Button type="link">Hi, {user?.name}</Button>
-        </Dropdown>
+        <User />
       </HeaderRight>
     </Header>
+  );
+};
+
+const User = () => {
+  const { logout, user } = useAuth();
+
+  return (
+    <Dropdown
+      overlay={
+        <Menu>
+          <Menu.Item key={"logout"}>
+            <Button type="link" onClick={logout}>
+              登出
+            </Button>
+          </Menu.Item>
+        </Menu>
+      }
+    >
+      <Button type="link">Hi, {user?.name}</Button>
+    </Dropdown>
   );
 };
 
