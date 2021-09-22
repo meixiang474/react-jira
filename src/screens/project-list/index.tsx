@@ -5,11 +5,13 @@ import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
-import { useProjectsSeatchParams } from "./util";
-import { Row } from "components/lib";
+import { useProjectModal, useProjectsSeatchParams } from "./util";
+import { ButtonNoPadding, Row } from "components/lib";
 
-export const ProjectListScreen = (props: { projectButton: JSX.Element }) => {
+export const ProjectListScreen = () => {
   useDocumentTitle("项目列表", false);
+
+  const { open } = useProjectModal();
 
   // 获取查询参数
   const [param, setParam] = useProjectsSeatchParams();
@@ -31,14 +33,15 @@ export const ProjectListScreen = (props: { projectButton: JSX.Element }) => {
     <Container>
       <Row between>
         <h1>项目列表</h1>
-        {props.projectButton}
+        <ButtonNoPadding type="link" onClick={open}>
+          创建项目
+        </ButtonNoPadding>
       </Row>
       <SearchPanel param={param} setParam={setParam} />
       {error ? (
         <Typography.Text type="danger">{error.message}</Typography.Text>
       ) : null}
       <List
-        projectButton={props.projectButton}
         refresh={retry}
         loading={isLoading}
         dataSource={list || []}
