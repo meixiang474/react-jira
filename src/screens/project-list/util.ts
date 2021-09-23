@@ -1,8 +1,9 @@
 import { useMemo } from "react";
+import { cleanObject } from "utils";
 import { useProject } from "utils/project";
 import { useUrlQueryParam, useSetUrlSearchParam } from "utils/url";
 
-export const useProjectsSeatchParams = () => {
+export const useProjectsSearchParams = () => {
   // 获取查询参数
   const [param, setParam] = useUrlQueryParam(["name", "personId"]);
 
@@ -51,4 +52,9 @@ export const useProjectModal = () => {
     editingProject,
     isLoading,
   };
+};
+
+export const useProjectQueryKey = () => {
+  const [params] = useProjectsSearchParams();
+  return ["projects", cleanObject(params)];
 };

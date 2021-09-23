@@ -4,7 +4,7 @@ import { useDebounce, useDocumentTitle } from "utils";
 import styled from "@emotion/styled";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
-import { useProjectModal, useProjectsSeatchParams } from "./util";
+import { useProjectModal, useProjectsSearchParams } from "./util";
 import { ButtonNoPadding, ErrorBox, Row } from "components/lib";
 
 export const ProjectListScreen = () => {
@@ -13,7 +13,7 @@ export const ProjectListScreen = () => {
   const { open } = useProjectModal();
 
   // 获取查询参数
-  const [param, setParam] = useProjectsSeatchParams();
+  const [param, setParam] = useProjectsSearchParams();
 
   // 防抖处理的查询参数
   const debouncedParam = useDebounce(param, 200);
