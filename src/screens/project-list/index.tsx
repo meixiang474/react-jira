@@ -9,10 +9,9 @@ import { ButtonNoPadding, ErrorBox, Row } from "components/lib";
 
 export const ProjectListScreen = () => {
   useDocumentTitle("项目列表", false);
-
   const { open } = useProjectModal();
-
   // 获取查询参数
+  // setParam上次一样的数据，param不会改变地址
   const [param, setParam] = useProjectsSearchParams();
 
   // 防抖处理的查询参数

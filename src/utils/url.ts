@@ -1,24 +1,21 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
-import { cleanObject } from "utils";
+import { cleanObject, subset } from "utils";
 
 // 自动添加 url 查询参数，读取 url 查询参数
 export const useUrlQueryParam = <T extends string>(keys: T[]) => {
   // 获取查询参数 map
-  const [searchParams, setSearchParam] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const setSearchParam = useSetUrlSearchParam();
+  const [stateKeys] = useState(keys);
   return [
     useMemo(() => {
-      return keys.reduce((memo, current) => {
-        return { ...memo, [current]: searchParams.get(current) || "" };
-      }, {} as { [key in T]: string });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams]),
+      return subset(Object.fromEntries(searchParams), stateKeys) as {
+        [key in T]: string;
+      };
+    }, [searchParams, stateKeys]),
     (params: Partial<{ [key in T]: unknown }>) => {
-      const o = cleanObject({
-        ...Object.fromEntries(searchParams),
-        ...params,
-      }) as URLSearchParamsInit;
-      return setSearchParam(o);
+      return setSearchParam(params);
     },
   ] as const;
 };
